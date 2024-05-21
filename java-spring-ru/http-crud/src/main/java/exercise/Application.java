@@ -20,13 +20,13 @@ import exercise.model.Post;
 @RestController
 public class Application {
     // Хранилище добавленных постов
-    private List<Post> posts = Data.getPosts();
+    private final List<Post> posts = Data.getPosts();
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
-    @GetMapping("/post/{id}")
+    @GetMapping("/posts/{id}")
     Optional<Post> getPost(@PathVariable String id) {
         return posts.stream().filter(post -> post.getId().equals(id)).findFirst();
     }
@@ -35,10 +35,11 @@ public class Application {
     List<Post> getPosts(@RequestParam(defaultValue = "10") Integer limit,
                         @RequestParam(defaultValue = "1") Integer page) {
         long skip = (long) (page - 1) * limit;
-        return posts.stream().skip(skip).limit(limit).toList();
+        return posts.stream()
+                .skip(skip).limit(limit).toList();
     }
 
-    @PutMapping("/post/{id}")
+    @PutMapping("/posts/{id}")
     Optional<Post> updatePost(@PathVariable String id, @RequestBody Post post) {
         var existed = posts.stream().filter((ex) -> ex.getId().equals(id)).findFirst();
         existed.ifPresent(value -> {
@@ -48,13 +49,14 @@ public class Application {
         return existed;
     }
 
-    @PostMapping("/post")
+    @PostMapping("/posts")
     Post createPost(@RequestBody Post post) {
         posts.add(post);
+        System.out.println("Post created: " + post);
         return post;
     }
 
-    @DeleteMapping("/post/{id}")
+    @DeleteMapping("/posts/{id}")
     void deletePost(@PathVariable String id) {
         posts.removeIf((post) -> post.getId().equals(id));
     }
