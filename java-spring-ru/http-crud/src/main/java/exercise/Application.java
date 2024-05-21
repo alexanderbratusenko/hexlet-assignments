@@ -48,6 +48,12 @@ public class Application {
         return existed;
     }
 
+    @PostMapping("/post")
+    Post createPost(@RequestBody Post post) {
+        posts.add(post);
+        return post;
+    }
+
     @DeleteMapping("/post/{id}")
     void deletePost(@PathVariable String id) {
         posts.removeIf((post) -> post.getId().equals(id));
